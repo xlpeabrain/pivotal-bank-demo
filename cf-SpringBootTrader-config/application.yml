@@ -1,8 +1,8 @@
 ribbon:
-  IsSecure: false
+  IsSecure: true
 pivotal:
   quotesService:
-    name: quotes-service
+    name: quote-service
   userService:
     name: user-service  
   accountsService:
