@@ -31,7 +31,9 @@ public class UserService {
 	public void createUser(User user) {
 		logger.debug("Creating user with userId: " + user.getUserid());
 		logger.debug(user.toString());
-		String status = restTemplate.postForObject("http://" + userService + "/users/", user, String.class);
+		logger.info("Creating user with template: " + restTemplate.toString());
+		logger.info("UserService:" + userService);
+		String status = restTemplate.postForObject("http://" + userService + "/users", user, String.class);
 		logger.info("Status from registering account for "+ user.getUserid()+ " is " + status);
 	}
 	
