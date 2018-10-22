@@ -30,7 +30,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http
             .authorizeRequests()
-                .antMatchers("/", "/registration","/hystrix.stream").permitAll()
+                .antMatchers("/", "/registration","/hystrix.stream","/webjars/**","/css/**","/fonts/**","/images/**").permitAll()
 				.requestMatchers(EndpointRequest.toAnyEndpoint()).permitAll()
                 .anyRequest().authenticated()
                 .and()
@@ -48,7 +48,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         web
                 .ignoring()
                 .antMatchers("/webjars/**")
-                .antMatchers("/images/**").antMatchers("/css/**").antMatchers("/js/**");
+                .antMatchers("/images/**").antMatchers("/css/**").antMatchers("/js/**")
+				.antMatchers("/fonts/**");
     }
 	
 	@Autowired

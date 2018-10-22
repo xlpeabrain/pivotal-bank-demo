@@ -33,7 +33,7 @@ public class QuotesService {
 	private static final Logger logger = LoggerFactory
 			.getLogger(QuotesService.class);
 	@Autowired
-	@LoadBalanced
+//	@LoadBalanced
 	private RestTemplate restTemplate;
 
 
@@ -62,7 +62,7 @@ public class QuotesService {
 	@HystrixCommand(fallbackMethod = "getCompaniesFallback")
 	public List<CompanyInfo> getCompanies(String name) {
 		logger.debug("Fetching companies with name or symbol matching: " + name);
-		CompanyInfo[] infos = restTemplate.getForObject("http://" + quotesService + "/v1/company/{name}", CompanyInfo[].class, name);
+		CompanyInfo[] infos = restTemplate.getForObject("https://" + quotesService + "/v1/company/{name}", CompanyInfo[].class, name);
 		return Arrays.asList(infos);
 	}
 	private List<CompanyInfo> getCompaniesFallback(String name) {
@@ -77,7 +77,9 @@ public class QuotesService {
 	 */
 	public List<Quote> getMultipleQuotes(String symbols) {
 		logger.debug("retrieving multiple quotes: " + symbols);
-		Quote[] quotesArr = restTemplate.getForObject("http://" + quotesService + "/v1/quotes?q={symbols}", Quote[].class, symbols);
+		quotesService = "QUOTES-SERVICE";
+		logger.info("URL used: https://{}/v1/quotes?q={}",quotesService, symbols);
+		Quote[] quotesArr = restTemplate.getForObject("https://" + quotesService + "/v1/quotes?q={symbols}", Quote[].class, symbols);
 		List<Quote> quotes = Arrays.asList(quotesArr);
 		logger.debug("Received quotes: {}",quotes);
 		return quotes;
