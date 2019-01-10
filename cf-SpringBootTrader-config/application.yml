@@ -2,7 +2,7 @@ ribbon:
   IsSecure: true
 pivotal:
   quotesService:
-    name: quote-service
+    name: quotes-service
   userService:
     name: user-service  
   accountsService:
