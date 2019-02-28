@@ -4,6 +4,3 @@ spring:
   jpa:
      hibernate:
         ddl-auto: update
-management:
-  cloudfoundry:
-    skip-ssl-validation: false
