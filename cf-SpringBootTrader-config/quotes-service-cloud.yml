@@ -1,3 +1,0 @@
-management:
-  cloudfoundry:
-    skip-ssl-validation: false
