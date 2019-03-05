@@ -15,10 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Manages a portfolio of holdings of stock/shares.
@@ -53,6 +50,8 @@ public class PortfolioService {
 
 	@Value("${pivotal.accountsService.name}")
 	protected String accountsService;
+
+	protected Random randomTransactionId = new Random();
 
 	/**
 	 * Retrieves the portfolio for the given accountId.
@@ -147,7 +146,9 @@ public class PortfolioService {
 			double amount = order.getQuantity()
 					* order.getPrice().doubleValue()
 					+ order.getOrderFee().doubleValue();
-			
+
+
+			transaction.setTransactionId(randomTransactionId.nextInt());
 			transaction.setAccountId(order.getAccountId());
 			transaction.setAmount(BigDecimal.valueOf(amount));
 			transaction.setCurrency(order.getCurrency());
@@ -159,7 +160,8 @@ public class PortfolioService {
 			double amount = order.getQuantity()
 					* order.getPrice().doubleValue()
 					- order.getOrderFee().doubleValue();
-			
+
+			transaction.setTransactionId(randomTransactionId.nextInt());
 			transaction.setAccountId(order.getAccountId());
 			transaction.setAmount(BigDecimal.valueOf(amount));
 			transaction.setCurrency(order.getCurrency());
@@ -178,6 +180,10 @@ public class PortfolioService {
 			logger.info(String
 					.format("Account funds updated successfully for account: %s and new funds are: %s",
 							order.getAccountId(), result.getBody()));
+
+			// Submit to AWS about order
+			callFunction(transaction, restTemplate);
+
 			return repository.save(order);
 			
 		} else {
@@ -185,6 +191,22 @@ public class PortfolioService {
 			// SK - Whats the expected behaviour?
 			logger.warn("PortfolioService:addOrder - decresing balance HTTP not ok: ");
 			return null;
+		}
+
+	}
+
+	private void callFunction(Transaction transaction, RestTemplate template) {
+		logger.info("Submitting Transaction {} to Function", transaction.getTransactionId());
+		try {
+			ResponseEntity<String> result = restTemplate.postForEntity(
+					"https://czjbyefvra.execute-api.ap-southeast-1.amazonaws.com/test?txnId="
+							+ transaction.getTransactionId()
+							+ "&txnDesc=" +
+							transaction.getDescription(),
+					transaction, String.class);
+			logger.info("Function call Response code: {}", result.getStatusCode());
+		} catch (Exception e) {
+			logger.error("Exception posting to function.", e);
 		}
 
 	}
