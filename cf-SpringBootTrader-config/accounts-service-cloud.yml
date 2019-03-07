@@ -5,3 +5,6 @@ management:
   cloudfoundry:
     enabled: true
     skip-ssl-validation: true
+endpoints:
+  health:
+    sensitive: false
