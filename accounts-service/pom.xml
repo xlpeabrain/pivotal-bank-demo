@@ -10,7 +10,7 @@
     </parent>
     <groupId>io.pivotal</groupId>
     <artifactId>accounts</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>0.0.2-SNAPSHOT</version>
     <name>accounts</name>
     <description>Micro-service to deal with accounts and user logins</description>
 
