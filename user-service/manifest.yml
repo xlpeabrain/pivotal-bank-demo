@@ -1,7 +1,7 @@
 ---
 applications:
 - name: user
-  path: build/libs/user.jar
+  path: target/user.jar
   services: [ traderdb, discovery-service, circuit-breaker-dashboard, config-server ]
   timeout: 180
   instances: 1

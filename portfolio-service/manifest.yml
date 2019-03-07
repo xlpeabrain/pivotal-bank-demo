@@ -1,7 +1,7 @@
 ---
 applications:
 - name: portfolio
-  path: build/libs/portfolio.jar
+  path: target/portfolio.jar
   services: [ traderdb, discovery-service, circuit-breaker-dashboard, config-server ]
   timeout: 180
   instances: 1
