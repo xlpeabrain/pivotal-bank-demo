@@ -1,6 +1,6 @@
 spring:
   application:
-     name: web-service
+     name: web
 info:
   build:
     group: ${group}
