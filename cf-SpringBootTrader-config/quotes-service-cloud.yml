@@ -6,3 +6,4 @@ pivotal:
 management:
   cloudfoundry:
     enabled: true
+    skip-ssl-validation: true
