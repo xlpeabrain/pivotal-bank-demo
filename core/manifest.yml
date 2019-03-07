@@ -1,0 +1,11 @@
+---
+applications:
+  - name: core
+    memory: 1G
+    random-route: true
+    path: target/core.jar
+#    env:
+#      JBP_CONFIG_OPEN_JDK_JRE: "{jre: { version: 11.+ }}"
+#  routes:
+#      - route: spring-music.sys.hklee-pcf-sea.unlost.co
+
