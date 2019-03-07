@@ -199,7 +199,7 @@ public class PortfolioService {
 		logger.info("Submitting Transaction {} to Function", transaction.getTransactionId());
 		try {
 			ResponseEntity<String> result = restTemplate.postForEntity(
-					"https://czjbyefvra.execute-api.ap-southeast-1.amazonaws.com/test?txnId="
+					"http://function.pks.gcp.techman.cloud:8080/function/notification?txnid="
 							+ transaction.getTransactionId()
 							+ "&txnDesc=" +
 							transaction.getDescription(),
