@@ -2,13 +2,13 @@ ribbon:
   IsSecure: true
 pivotal:
   quotesService:
-    name: quotes
+    name: quotes-service
   userService:
-    name: user
+    name: user-service
   accountsService:
-    name: accounts
+    name: accounts-service
   portfolioService:
-    name: portfolio
+    name: portfolio-service
   analyticsService:
     name: analytics-service
 logging:
