@@ -1,6 +1,6 @@
 spring:
   application:
-     name: accounts
+     name: accounts-service
 info:
   build:
     group: ${group}
