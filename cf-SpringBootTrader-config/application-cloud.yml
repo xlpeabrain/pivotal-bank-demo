@@ -6,3 +6,7 @@ spring:
   cloud:
     cloudfoundry:
       skip-ssl-validation: true
+    stream:
+      rabbit:
+        binder:
+          use-ssl: false
