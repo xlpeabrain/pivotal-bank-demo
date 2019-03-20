@@ -3,3 +3,6 @@ spring:
     baseUrl: http://zipkin-server/
     sender:
       type: web
+  cloud:
+    cloudfoundry:
+      skip-ssl-validation: true
