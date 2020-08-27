@@ -10,6 +10,8 @@ import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import java.math.BigDecimal;
+import java.time.Instant;
 import java.util.*;
 
 /**
@@ -33,6 +35,7 @@ public class QuoteService {
 	protected String company_url;
 
 	public static final String FMT = "json";
+	private Random random = new Random();
 
 	/*
          * cannot autowire as don't want ribbon here.
@@ -55,17 +58,18 @@ public class QuoteService {
 		Map<String, String> params = new HashMap<String, String>();
 		params.put("symbol", symbol);
 
-		IexQuote quote = restTemplate.getForObject(quote_url, IexQuote.class, params);
+//		IexQuote quote = restTemplate.getForObject(quote_url, IexQuote.class, params);
+//
+//		if (quote.getSymbol() == null) {
+//			throw new SymbolNotFoundException("Symbol not found: " + symbol);
+//		}
+//
+//		log.debug("QuoteService.getQuote: retrieved quote: " + quote);
 
-		if (quote.getSymbol() == null) {
-			throw new SymbolNotFoundException("Symbol not found: " + symbol);
-		}
 
-		log.debug("QuoteService.getQuote: retrieved quote: " + quote);
+//		return QuoteMapper.INSTANCE.mapFromIexQuote(quote);
 
-
-		return QuoteMapper.INSTANCE.mapFromIexQuote(quote);
-
+		return quoteGenerator(symbol);
 	}
 
 	@SuppressWarnings("unused")
@@ -95,13 +99,18 @@ public class QuoteService {
 	public List<CompanyInfo> getCompanyInfo(String name) {
 		log.debug("QuoteService.getCompanyInfo: retrieving info for: "
 				+ name);
-		Map<String, String> params = new HashMap<String, String>();
-		params.put("name", name);
-		CompanyInfo[] companies = restTemplate.getForObject(company_url,
-				CompanyInfo[].class, params);
+//		Map<String, String> params = new HashMap<String, String>();
+//		params.put("name", name);
+//		CompanyInfo[] companies = restTemplate.getForObject(company_url,
+//				CompanyInfo[].class, params);
+		List<CompanyInfo> companies = new ArrayList<>();
+		int noOfCompanies = random.nextInt(10);
+		for (int count=0; count<noOfCompanies; count++) {
+			companies.add(companyInfoGenerator(name));
+		}
 		log.debug("QuoteService.getCompanyInfo: retrieved info: "
 				+ companies);
-		return Arrays.asList(companies);
+		return companies;
 	}
 
 	/**
@@ -114,21 +123,22 @@ public class QuoteService {
 	public List<Quote> getQuotes(String symbols) {
 		log.debug("retrieving multiple quotes for: " + symbols);
 
-		IexBatchQuote batchQuotes = restTemplate.getForObject(quotes_url, IexBatchQuote.class, symbols);
+//		IexBatchQuote batchQuotes = restTemplate.getForObject(quotes_url, IexBatchQuote.class, symbols);
 
-		log.debug("Got response: " + batchQuotes);
+//		log.debug("Got response: " + batchQuotes);
 		final List<Quote> quotes = new ArrayList<>();
 
 		Arrays.asList(symbols.split(",")).forEach(symbol -> {
-			if(batchQuotes.containsKey(symbol)) {
-				quotes.add(QuoteMapper.INSTANCE.mapFromIexQuote(batchQuotes.get(symbol).get("quote")));
-			} else {
-				log.warn("Quote could not be found for the following symbol: " + symbol);
-				Quote quote = new Quote();
-				quote.setSymbol(symbol);
-				quote.setStatus("FAILED");
-				quotes.add(quote);
-			}
+//			if(batchQuotes.containsKey(symbol)) {
+//				quotes.add(QuoteMapper.INSTANCE.mapFromIexQuote(batchQuotes.get(symbol).get("quote")));
+				quotes.add(quoteGenerator(symbol));
+//			} else {
+//				log.warn("Quote could not be found for the following symbol: " + symbol);
+//				Quote quote = new Quote();
+//				quote.setSymbol(symbol);
+//				quote.setStatus("FAILED");
+//				quotes.add(quote);
+//			}
 		});
 
 		return quotes;
@@ -142,5 +152,35 @@ public class QuoteService {
 				+ symbol);
 		List<CompanyInfo> companies = new ArrayList<>();
 		return companies;
+	}
+
+	private Quote quoteGenerator(String symbol) {
+		Quote quote = new Quote();
+		quote.setSymbol(symbol);
+		quote.setHigh(new BigDecimal(Math.random()));
+		quote.setName(symbol);
+		quote.setOpen(new BigDecimal(Math.random()));
+		quote.setHigh(new BigDecimal(Math.random()));
+		quote.setLow(new BigDecimal(Math.random()));
+		quote.setChange(new BigDecimal(Math.random()));
+		quote.setChangePercent(new BigDecimal(Math.random()).floatValue());
+		quote.setMarketCap(new BigDecimal(Math.random()).floatValue());
+
+			quote.setLastPrice(new BigDecimal(Math.random()));
+			quote.setTimestamp(Date.from(Instant.now()));
+
+		quote.setStatus("SUCCESS");
+		quote.setVolume((int) new BigDecimal(Math.random()).doubleValue());
+
+		return quote;
+	}
+
+	private CompanyInfo companyInfoGenerator(String symbol) {
+		CompanyInfo company = new CompanyInfo();
+		company.setSymbol(symbol);
+		company.setName("RandomName"+Math.random());
+		company.setExchange("No Exchange set");
+
+		return company;
 	}
 }

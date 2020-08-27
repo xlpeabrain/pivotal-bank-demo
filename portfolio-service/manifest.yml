@@ -2,7 +2,8 @@
 applications:
 - name: portfolio
   path: target/portfolio.jar
-  services: [ traderdb, discovery-service, circuit-breaker-dashboard, config-server ]
+#  services: [ traderdb, discovery-service, circuit-breaker-dashboard, config-server ]
+  services: [ traderdb, discovery-service, config-server ]
   timeout: 180
   instances: 1
   memory: 1G
